@@ -62,6 +62,27 @@ def _register_highway_envs():
         entry_point="highway_env.envs.intersection_env:MultiAgentIntersectionEnv",
         additional_wrappers=(MultiAgentWrapper.wrapper_spec(),),
     )
+    
+    # Our addition
+    # we are not using this
+    register(
+        id="intersectionmpc-v5",
+        entry_point='highway_env.envs:intersectionmpc_env',  # Replace with actual module and class
+        max_episode_steps=1000,
+    )
+
+    # for MPC-DRL
+    register(
+        id="intersectiondrl-v5",
+        entry_point='highway_env.envs:intersectiondrl_env',  # Replace with actual module and class
+        max_episode_steps=1000,
+    )
+    
+    # For MPC
+    register(
+        id='intersectionmpc-v1',
+        entry_point='highway_env.envs:ContinuousIntersectionEnvMpc',
+    )
 
     # lane_keeping_env.py
     register(

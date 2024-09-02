@@ -4,7 +4,10 @@ from highway_env.envs.intersection_env import (
     ContinuousIntersectionEnv,
     IntersectionEnv,
     MultiAgentIntersectionEnv,
+    ContinuousIntersectionEnvMpc, # added by me
 )
+from highway_env.envs.intersectiondrl_env import intersectiondrl_env
+
 from highway_env.envs.lane_keeping_env import LaneKeepingEnv
 from highway_env.envs.merge_env import MergeEnv
 from highway_env.envs.parking_env import (
@@ -25,6 +28,8 @@ __all__ = [
     "IntersectionEnv",
     "ContinuousIntersectionEnv",
     "MultiAgentIntersectionEnv",
+    "ContinuousIntersectionEnvMpc", # added by me
+    "intersectiondrl_env", # added by me
     "LaneKeepingEnv",
     "MergeEnv",
     "ParkingEnv",
