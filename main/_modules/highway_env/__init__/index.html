@@ -357,6 +357,27 @@
         <span class="n">entry_point</span><span class="o">=</span><span class="s2">&quot;highway_env.envs.intersection_env:MultiAgentIntersectionEnv&quot;</span><span class="p">,</span>
         <span class="n">additional_wrappers</span><span class="o">=</span><span class="p">(</span><span class="n">MultiAgentWrapper</span><span class="o">.</span><span class="n">wrapper_spec</span><span class="p">(),),</span>
     <span class="p">)</span>
+    
+    <span class="c1"># Our addition</span>
+    <span class="c1"># we are not using this</span>
+    <span class="n">register</span><span class="p">(</span>
+        <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;intersectionmpc-v5&quot;</span><span class="p">,</span>
+        <span class="n">entry_point</span><span class="o">=</span><span class="s1">&#39;highway_env.envs:intersectionmpc_env&#39;</span><span class="p">,</span>  <span class="c1"># Replace with actual module and class</span>
+        <span class="n">max_episode_steps</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># for MPC-DRL</span>
+    <span class="n">register</span><span class="p">(</span>
+        <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;intersectiondrl-v5&quot;</span><span class="p">,</span>
+        <span class="n">entry_point</span><span class="o">=</span><span class="s1">&#39;highway_env.envs:intersectiondrl_env&#39;</span><span class="p">,</span>  <span class="c1"># Replace with actual module and class</span>
+        <span class="n">max_episode_steps</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+    <span class="p">)</span>
+    
+    <span class="c1"># For MPC</span>
+    <span class="n">register</span><span class="p">(</span>
+        <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;intersectionmpc-v1&#39;</span><span class="p">,</span>
+        <span class="n">entry_point</span><span class="o">=</span><span class="s1">&#39;highway_env.envs:ContinuousIntersectionEnvMpc&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="c1"># lane_keeping_env.py</span>
     <span class="n">register</span><span class="p">(</span>

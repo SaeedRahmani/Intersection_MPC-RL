@@ -725,6 +725,50 @@
             <span class="p">}</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">config</span>
+
+<span class="c1"># Adding a new env for MPC</span>
+<span class="k">class</span> <span class="nc">ContinuousIntersectionEnvMpc</span><span class="p">(</span><span class="n">IntersectionEnv</span><span class="p">):</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">default_config</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">default_config</span><span class="p">()</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;observation&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Kinematics&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;vehicles_count&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+                    
+                    <span class="s2">&quot;normalize&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                    <span class="s2">&quot;features&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="s2">&quot;presence&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;x&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;y&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;vx&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;vy&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;long_off&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;lat_off&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;ang_off&quot;</span><span class="p">,</span>
+                    <span class="p">],</span>
+                <span class="p">},</span>
+                <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;ContinuousAction&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;steering_range&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">3</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">3</span><span class="p">],</span>
+                    <span class="s2">&quot;acceleration_range&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">],</span>
+                    <span class="s2">&quot;longitudinal&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                    <span class="s2">&quot;lateral&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                    <span class="s2">&quot;dynamical&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="p">},</span>
+                <span class="s2">&quot;collision_reward&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;arrived_reward&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;high_speed_reward&quot;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span>
+                <span class="s2">&quot;on_road_reward&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
+                <span class="s2">&quot;policy_frequency&quot;</span><span class="p">:</span><span class="mi">7</span><span class="p">,</span>
+                <span class="s2">&quot;normalize_reward&quot;</span><span class="p">:</span> <span class="kc">True</span>
+            
+                
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">config</span>
+    
 </pre></div>
           </article>
         </div>
