@@ -31,7 +31,7 @@ model = SAC('MlpPolicy', env,
             tensorboard_log="intersection_sac/")
 
 # Training parameters
-num_episodes = 1000
+num_episodes = 15
 episode_rewards = []
 
 # Set up the plot for live updating

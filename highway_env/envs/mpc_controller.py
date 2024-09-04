@@ -140,7 +140,7 @@ def cost_function(u, current_state, reference_trajectory, obstacles, start_index
         state_cost = 20 * perp_deviation**2 + 1 * para_deviation**2 + 1000* (state[2] - ref_v)**2 + 0.1 * (state[3] - ref_heading)**2
         control_cost = 0.01 * action[0]**2 + 0.1 * action[1]**2
         
-       
+        obstacle_cost = 0
         for obs_future_positions in predicted_obstacles:
             obs_x, obs_y = obs_future_positions[min(i, len(obs_future_positions) - 1)]
             distance_to_obstacle = np.sqrt((state[0] - obs_x)**2 + (state[1] - obs_y)**2)

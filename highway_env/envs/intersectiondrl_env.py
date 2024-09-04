@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 from scipy.optimize import minimize
 import math
 from timeit import default_timer as timer
-from highway_env.envs.mpc_controller import *
+from highway_env.envs.mpc_controller_wocost import *
 from highway_env.envs.common.observation import KinematicObservation
 
 
@@ -344,12 +344,7 @@ class intersectiondrl_env(AbstractEnv):
             
             self.road.act()
             self.road.step(self.dt)
-           
-
-            if self.collision_detected:
-                speed = np.sqrt(self.ego_vehicle.velocity[0]**2 + self.ego_vehicle.velocity[1]**2)
-            else:
-                speed = np.sqrt(self.ego_vehicle.velocity[0]**2 + self.ego_vehicle.velocity[1]**2)
+            speed = np.sqrt(self.ego_vehicle.velocity[0]**2 + self.ego_vehicle.velocity[1]**2)
             
             self.current_state = np.array([float(self.ego_vehicle.position[0]),
                                            float(self.ego_vehicle.position[1]),

@@ -19,7 +19,7 @@ MIN_SPEED = 0
 
 def generate_global_reference_trajectory(collision_points=None, speed_override=None):
     trajectory = []
-    x, y, v, heading, v_ref = 2, 50, 10, -np.pi/2,10  # Starting with 10 m/s speed
+    x, y, v, heading, v_ref = 2, 50, 10, -np.pi/2, 10  # Starting with 10 m/s speed
     turn_start_y = 20
     radius = 5  # Radius of the curve
     turn_angle = np.pi / 2  # Total angle to turn (90 degrees for a left turn)
@@ -141,13 +141,13 @@ def cost_function(u, current_state, reference_trajectory, obstacles, start_index
         control_cost = 0.01 * action[0]**2 + 0.1 * action[1]**2
         
        
-        """for obs_future_positions in predicted_obstacles:
-            obs_x, obs_y = obs_future_positions[min(i, len(obs_future_positions) - 1)]
-            distance_to_obstacle = np.sqrt((state[0] - obs_x)**2 + (state[1] - obs_y)**2)
-            if distance_to_obstacle < 1.0:
-                obstacle_cost += 1000 / (distance_to_obstacle + 1e-6)**2
-            else:
-                obstacle_cost += 100 / (distance_to_obstacle + 1e-6)**2"""
+        # for obs_future_positions in predicted_obstacles:
+        #     obs_x, obs_y = obs_future_positions[min(i, len(obs_future_positions) - 1)]
+        #     distance_to_obstacle = np.sqrt((state[0] - obs_x)**2 + (state[1] - obs_y)**2)
+        #     if distance_to_obstacle < 1.0:
+        #         obstacle_cost += 1000 / (distance_to_obstacle + 1e-6)**2
+        #     else:
+        #         obstacle_cost += 100 / (distance_to_obstacle + 1e-6)**2
         
         total_cost += state_cost + control_cost #+ obstacle_cost
         
