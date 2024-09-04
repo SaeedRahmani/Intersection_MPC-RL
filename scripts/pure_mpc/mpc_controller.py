@@ -55,7 +55,6 @@ def generate_global_reference_trajectory(collision_points=None, speed_override=N
     
     return trajectory
 
-
 def vehicle_model(state, action):
     x, y, v, psi = state
     a, delta = action
@@ -166,14 +165,32 @@ def cost_function(u, current_state, reference_trajectory, obstacles, start_index
     return total_cost
 
 def mpc_control(current_state, reference_trajectory, obstacles, start_index, collision_detected):
+    """    
+    The key function to solve the MPC, return the action (acceleration and steering)
+
+    Returns:
+        Action: action (acceleration and steering)
+    """
+    # initial state guess, all zero for now
     u0 = np.zeros(2 * horizon)
     
+    # bounds on variables
     bounds = [(-10, 3), (-np.pi/2, np.pi/2)] * horizon
     
-    result = minimize(cost_function, u0, args=(current_state, reference_trajectory, obstacles, start_index, dt, collision_detected), 
-                      method='SLSQP', bounds=bounds, options={'maxiter': 100})
+    # solve the mpc optimization model
+    result = minimize(
+        fun=cost_function, 
+        x0=u0, 
+        args=(current_state, reference_trajectory, obstacles, start_index, dt, collision_detected), 
+        method='SLSQP', # https://docs.scipy.org/doc/scipy/reference/optimize.minimize-slsqp.html#optimize-minimize-slsqp
+        bounds=bounds, 
+        options={
+            'maxiter': 100
+        }
+    )
     
-    return result.x[:2]  # Return action
+    # Return action as a tuple with two elements: (acceleration, steering)
+    return result.x[:2]  
 
 def determine_direction(ego_psi, other_psi):
     # Calculate the absolute difference in heading
@@ -188,6 +205,11 @@ def determine_direction(ego_psi, other_psi):
         return "opposite"
 
 def process_observation(obs):
+    """
+    Given the new observation from the environment, 
+    calculate the state of ego-vehicle (x, y, v, psi),
+    check other vehicles as potential obstacles and their directions 
+    """
     ego_vehicle = obs[0]
     
     x, y = ego_vehicle[1], ego_vehicle[2]

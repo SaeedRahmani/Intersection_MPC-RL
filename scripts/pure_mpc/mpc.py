@@ -26,7 +26,7 @@ WHEELBASE = 2.5
 MIN_SPEED = 0
 
 original_reference_trajectory = mpc.generate_global_reference_trajectory()
-global_reference_trajectory = original_reference_trajectory.copy()
+global_reference_trajectory = original_reference_trajectory.copy()  # CHECKME: shallow copy
 ref_path = [(x, y) for x, y, v, psi in global_reference_trajectory]
 
 # Variables to store real path
@@ -81,7 +81,7 @@ for step in range(max_steps):
     
     
     # Update the current state after taking the action
-    current_state, obstacles,directions = mpc.process_observation(obs)
+    current_state, obstacles, directions = mpc.process_observation(obs)
     
     # Update the plot
     mpc.plot_trajectory(real_path, ref_path, predicted_obstacles, collision_points, directions)
@@ -89,6 +89,7 @@ for step in range(max_steps):
     if info["crashed"]:
         crashed += 1
     
+    # check if the simulation ends, and restart a new one
     if done or truncated or closest_index >= len(global_reference_trajectory) - horizon:
         print(f"Finished after {step+1} steps")
         obs, info = env.reset()
