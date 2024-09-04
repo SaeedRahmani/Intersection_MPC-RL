@@ -1,17 +1,41 @@
 # This is VERSION 1.10.1
 
-Version checking
+## Version checking
 
 ```
 # consistent on both Saeed and Gavin's systems
 Python=3.9.19
 highway-env=1.10.1
-gymnasium=-0.29.1   # now the latest version, 1.0.0a2
-stable-baselines3-2.3.2
+gymnasium=0.29.1   # not the latest version, which is 1.0.0a2
+numpy=1.26
 
-# on Gavin's venv
-numpy=2.0.2
+# on Saeed's system
+stable-baselines3=2.4.0a8
+
+# on Gavin's system
+stable-baselines3=2.3.2
 torch=2.4.0
+```
+
+## Gym environments
+
+- Pure MPC
+- Pure RL
+- MPC + RL
+
+```python
+# To run the pure MPC:
+# pip install -e . # install the local package first
+gym.make("intersectionmpc-v1", render_mode="rgb_array")
+# entry_point="highway_env.envs:ContinuousIntersectionEnvMpc"
+
+# To run the pure RL:
+gym.make("intersection-v1", render_mode="rgb_array")
+# entry_point="highway_env.envs.intersection_env:ContinuousIntersectionEnv"
+
+# To run the MPC-RL:
+gym.make("intersectiondrl-v5", render_mode="rgb_array")
+# entry_point="highway_env.envs:intersectiondrl_env"
 ```
 
 # highway-env
