@@ -1,5 +1,19 @@
 # This is VERSION 1.10.1
 
+Version checking
+
+```
+# consistent on both Saeed and Gavin's systems
+Python=3.9.19
+highway-env=1.10.1
+gymnasium=-0.29.1   # now the latest version, 1.0.0a2
+stable-baselines3-2.3.2
+
+# on Gavin's venv
+numpy=2.0.2
+torch=2.4.0
+```
+
 # highway-env
 
 [![build](https://github.com/eleurent/highway-env/workflows/build/badge.svg)](https://github.com/eleurent/highway-env/actions?query=workflow%3Abuild)
