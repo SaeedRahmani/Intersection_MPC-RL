@@ -64,12 +64,12 @@ def _register_highway_envs():
     )
     
     # Our addition
-    # we are not using this
-    register(
-        id="intersectionmpc-v5",
-        entry_point="highway_env.envs:intersectionmpc_env",  # Replace with actual module and class
-        max_episode_steps=1000,
-    )
+    # # we are not using this
+    # register(
+    #     id="intersectionmpc-v5",
+    #     entry_point="highway_env.envs:intersectionmpc_env",  # Replace with actual module and class
+    #     max_episode_steps=1000,
+    # )
 
     # for MPC-DRL
     register(

@@ -563,10 +563,10 @@ class intersectiondrl_env(AbstractEnv):
 env_id = 'intersectiondrl-v5'
 
 
-if env_id not in registry:
-    register(
-        id=env_id,
-        entry_point='highway_env.envs.intersectiondrl_env:intersectiondrl_env',  # Replace with actual module and class
-        max_episode_steps=1000,
-    )
-    print("registered", env_id)
+# if env_id not in registry:
+#     register(
+#         id=env_id,
+#         entry_point='highway_env.envs.intersectiondrl_env:intersectiondrl_env',  # Replace with actual module and class
+#         max_episode_steps=1000,
+#     )
+#     print("registered", env_id)
