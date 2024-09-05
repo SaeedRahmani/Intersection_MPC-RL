@@ -2,6 +2,7 @@ import numpy as np
 from scipy.optimize import minimize
 import math
 import matplotlib.pyplot as plt
+from typing import List, Tuple, Dict
 
 """mpc controller for pure mpc"""
 
@@ -17,9 +18,21 @@ WHEELBASE = 2.5
 MIN_SPEED = 0
 
 
-def generate_global_reference_trajectory(collision_points=None, speed_override=None):
+def generate_global_reference_trajectory(collision_points=None, speed_override=None) -> List:
+    """
+    Generate the reference trajectory of the ego-vehicle in the global coordinate system.
+    This reference trajectory can be modified based on the predicted collision point. 
+    If there is a collision, the reference speeds after that point be zeroed out.
+
+    Args:
+        collision_points: Predicted potential collision point. Defaults to None.
+
+    Returns:
+        List: A list of points representing the reference trajectory, with x, y, heading angle and speed. 
+    """
+    
     trajectory = []
-    x, y, v, heading, v_ref = 2, 50, 10, -np.pi/2,10  # Starting with 10 m/s speed
+    x, y, v, heading, v_ref = 2, 50, 10, -np.pi/2, 10  # Starting with 10 m/s speed
     turn_start_y = 20
     radius = 5  # Radius of the curve
     turn_angle = np.pi / 2  # Total angle to turn (90 degrees for a left turn)
@@ -27,7 +40,7 @@ def generate_global_reference_trajectory(collision_points=None, speed_override=N
     # Go straight until reaching the turn start point
     for _ in range(40):
         if collision_points and (x, y) in collision_points:
-            v =  0  # Set speed based on DRL agent's decision
+            v = 0  # Set speed based on DRL agent's decision
         x += 0
         y += v * dt * math.sin(heading)
         trajectory.append((x, y, v, heading))
@@ -36,7 +49,7 @@ def generate_global_reference_trajectory(collision_points=None, speed_override=N
     angle_increment = turn_angle / 20  # Divide the turn into 20 steps
     for _ in range(20):
         if collision_points and (x, y) in collision_points:
-            v =  0  # Set speed based on DRL agent's decision
+            v = 0  # Set speed based on DRL agent's decision
         heading += angle_increment  # Decrease heading to turn left
         x -= v * dt * math.cos(heading)
         y += v * dt * math.sin(heading)
@@ -46,7 +59,7 @@ def generate_global_reference_trajectory(collision_points=None, speed_override=N
     # Continue straight after the turn
     for _ in range(25):  # Continue for a bit after the turn
         if collision_points and (x, y) in collision_points:
-            v =  0  # Set speed based on DRL agent's decision
+            v = 0  # Set speed based on DRL agent's decision
         
         x -= v * dt * math.cos(heading)
         y += 0
@@ -55,7 +68,18 @@ def generate_global_reference_trajectory(collision_points=None, speed_override=N
     
     return trajectory
 
-def vehicle_model(state, action):
+def vehicle_model(state, action) -> np.ndarray:
+    """
+    A simple vehicle model to predict the future state of vehicle,
+    given state, and action.
+
+    Args:
+        state: x, y, heading angle and speed
+        action: acceleration and heading angle
+
+    Returns:
+        next_state: same format as argument `state`
+    """
     x, y, v, psi = state
     a, delta = action
     
@@ -65,15 +89,16 @@ def vehicle_model(state, action):
     v_next = max(0, v + a * dt)  # Ensure that speed does not go negative
     psi_next = psi + v * math.sin(beta) / WHEELBASE * dt
     
-    return np.array([x_next, y_next, v_next, psi_next])
+    next_state = np.array([x_next, y_next, v_next, psi_next])
+    return next_state
 
-def find_closest_point(current_state, reference_trajectory):
+def find_closest_point(current_state, reference_trajectory) -> int:
     current_position = current_state[:2]
     distances = [np.linalg.norm(current_position - np.array(point[:2])) for point in reference_trajectory]
     closest_index = np.argmin(distances)
     return closest_index
 
-def predict_vehicle_positions(state, action, steps, dt=0.1):
+def predict_vehicle_positions(state, action, steps, dt=0.1) -> List:
     """ Predict future positions of a vehicle based on current state and action """
     state = np.array(state)
     predictions = []
@@ -82,10 +107,10 @@ def predict_vehicle_positions(state, action, steps, dt=0.1):
         state = vehicle_model(state, action)
         predictions.append(state[:2])  # Append only x, y positions
     
-    #print("predicted obstacles-----",predictions)
+    # print("predicted obstacles-----",predictions)
     return predictions
 
-def predict_others_future_positions(obstacles, ego_speed, steps, dt):
+def predict_others_future_positions(obstacles: List, ego_speed, steps, dt) -> List:
     """ Predict future positions of all obstacles """
     future_positions = []
     
@@ -146,7 +171,8 @@ def cost_function(u, current_state, reference_trajectory, obstacles, start_index
             else:
                 obstacle_cost += 100 / (distance_to_obstacle + 1e-6)**2
         
-        total_cost += state_cost + control_cost + obstacle_cost
+        # FIXME: these three cost components are added again later.
+        # total_cost += state_cost + control_cost + obstacle_cost
         
         if collision_detected:
             total_cost += 3000 * state[2]**2  # Penalize speed if a collision is detected
@@ -192,7 +218,17 @@ def mpc_control(current_state, reference_trajectory, obstacles, start_index, col
     # Return action as a tuple with two elements: (acceleration, steering)
     return result.x[:2]  
 
-def determine_direction(ego_psi, other_psi):
+def determine_direction(ego_psi: float, other_psi: float) -> str:
+    """
+    Return a string to descript the relative direction between ego vehicle and other vehicle.
+
+    Args:
+        ego_psi (float): ego vehicle's heading
+        other_psi (float): other vehicle's heading
+
+    Returns:
+        str: either `same` or `opposite`
+    """
     # Calculate the absolute difference in heading
     angle_diff = abs(ego_psi - other_psi)
     # Normalize the difference to the range [0, pi]
@@ -204,11 +240,20 @@ def determine_direction(ego_psi, other_psi):
     else:
         return "opposite"
 
-def process_observation(obs):
+def process_observation(obs: np.ndarray) -> Tuple[np.ndarray, List[Tuple[float, float, float, float, str]], List[str]]:
     """
     Given the new observation from the environment, 
     calculate the state of ego-vehicle (x, y, v, psi),
-    check other vehicles as potential obstacles and their directions 
+    check other vehicles as potential obstacles and their directions
+    
+    Args:
+        obs: observation received from the environment, 
+            which is a `KinematicObservation` defined in the environment config
+    
+    Returns:
+        current_state: ego vehicle's current state
+        obstacles: other vehicles' current state
+        direction: the fiveth component in each other vehicles' current states
     """
     ego_vehicle = obs[0]
     
@@ -216,18 +261,18 @@ def process_observation(obs):
     vx, vy = ego_vehicle[3], ego_vehicle[4]
     v = np.sqrt(vx**2 + vy**2)
     
-    psi = np.arctan2(vy, vx)  # Calculate heading from velocity
+    psi = np.arctan2(vy, vx)  # Calculate heading angle from velocity, angles in radians, in the range ``[-pi, pi]``
     
-    current_state = np.array([x, y, v, psi])
+    current_state = np.array([x, y, v, psi]) # ego vehicle's current state
     
     obstacles = []
     directions = []
     for vehicle in obs[1:]:
-        if vehicle[0] == 1:
+        if vehicle[0] == 1: # presence == 1 if exists
             ox, oy = vehicle[1], vehicle[2]
             ovx = vehicle[3] if len(vehicle) > 3 else 0  # Set default velocity components if not available
             ovy = vehicle[4] if len(vehicle) > 4 else 0
-            o_v = np.sqrt(ovx**2 + ovy**2)
+            # o_v = np.sqrt(ovx**2 + ovy**2)
             o_psi = np.arctan2(ovy, ovx)
             direction = determine_direction(psi, o_psi)
             obstacles.append([ox, oy, ovx, ovy, o_psi, direction])

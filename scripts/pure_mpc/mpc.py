@@ -44,7 +44,7 @@ for step in range(max_steps):
     env.render()
     
     current_state, obstacles, directions = mpc.process_observation(obs)
-    print('current state:', current_state)
+    # print('current state:', current_state)
     real_path.append((current_state[0], current_state[1]))  # Append current position to the path
 
     # Predict future positions of obstacles
@@ -75,8 +75,8 @@ for step in range(max_steps):
     
     x, y, v, psi = current_state
     a, delta = action
-    print(f"Step {step}: Location (x, y) = ({x:.2f}, {y:.2f}), Speed = {v:.2f} m/s, Acceleration = {a:.2f} m/s²\n")
-    print(f"Step {step}: Closest index: {closest_index}, Current Reference trajectory: {current_reference}\n")
+    # print(f"Step {step}: Location (x, y) = ({x:.2f}, {y:.2f}), Speed = {v:.2f} m/s, Acceleration = {a:.2f} m/s²\n")
+    # print(f"Step {step}: Closest index: {closest_index}, Current Reference trajectory: {current_reference}\n")
     obs, reward, done, truncated, info = env.step(action)
     
     
