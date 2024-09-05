@@ -460,9 +460,9 @@ class ContinuousIntersectionEnvMpc(IntersectionEnv):
                 "high_speed_reward": 0.2,
                 "on_road_reward": 0.5,
                 "policy_frequency":7,
-                "normalize_reward": True
-            
+                "normalize_reward": True,
                 
+                "scaling": 3.5, # scale the rendering animation to show the surrounding vehicles.
             }
         )
         return config

@@ -218,6 +218,7 @@ def mpc_control(current_state, reference_trajectory, obstacles, start_index, col
     # Return action as a tuple with two elements: (acceleration, steering)
     return result.x[:2]  
 
+# FIXME: direction difference? 
 def determine_direction(ego_psi: float, other_psi: float) -> str:
     """
     Return a string to descript the relative direction between ego vehicle and other vehicle.
